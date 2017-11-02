@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>July 2017 Training - CMT</title>
+
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown>
+                <script type="text/template">
+                    # Content Management Tools
+                    Maron Montano / <a href="mailto:mmontano@factset.com">mmontano@factset.com</a>
+                </script>
+            </section>
+            
+            <!--WIIFY-->
+            <section data-background="black">
+                <section data-markdown>
+                    Use __Content Inventory__, __Alert Model__ and __Event Manager__.
+                </section>
+                <section data-markdown>
+                    Know what to do when an __event__ has been encountered.
+                </section>
+                <section data-markdown>
+                    Last not but the least, be able to decode the  
+                    *__on-call jargon__*!
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    ## On-call overheard
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                       <span style="color:#3498DB">__McGregor:__</span> "Badtrip! Nag-page ngayon yung release ko kahapon."  
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <span style="color:#F7DC6F">__Mayweather:__</span> "Oh, bakit? Saan nag-fail?"  
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <span style="color:#3498DB">__McGregor:__</span> "Sa FDBWrite activity pre!"  
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <span style="color:#F7DC6F">__Mayweather:__</span> "Na-ack mo ba agad?"  
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <span style="color:#3498DB">__McGregor:__</span> "Hindi ko agad napansin eh. Nag-escalate sa level 3!"  
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <span style="color:#F7DC6F">__Mayweather:__</span> "GG. I-resolve mo nalang agad!"
+                    </script>
+                </section>
+            </section>
+            
+            <section data-markdown data-background="black">
+                ## Agenda
+                * Product tree
+                * Environments
+                * [Content Inventory](http://cmt.prod.factset.com/website/#/properties)
+                * Roles
+                * Alert Models
+                * [Event Manager](http://cmt.prod.factset.com/website/#/events)
+            </section>
+
+            <section data-background="#002B36">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## CMT
+                        We have a suite of web apps to manage content updates and many other tasks
+
+                        ![alt text](res/july2017_training_cmt/cmt-diagram.png "CMT Diagram") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## CMT
+                        * Can be accessed via <!-- .element: class="fragment" data-fragment-index="1"--> http://cmt.prod.factset.com/ <!-- .element: class="fragment" data-fragment-index="1"-->
+                        * Batch processing - execution of a series of jobs without manual intervention <!-- .element: class="fragment" data-fragment-index="2"-->
+                        * Batch processes? <!-- .element: class="fragment" data-fragment-index="3"-->
+                           * Update a database <!-- .element: class="fragment" data-fragment-index="4"-->
+                           * Archive files <!-- .element: class="fragment" data-fragment-index="5"-->
+                           * Generate a report <!-- .element: class="fragment" data-fragment-index="6"-->
+                    </script>
+                </section>
+            </section>
+
+            <section data-background="#320927">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Product Tree
+                        Group of related projects arranged in a hierarchy
+
+                        ![alt text](res/july2017_training_cmt/product-tree.png "Product Tree") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Product
+                        * Represents actual entity or service we provide to our clients or stakeholders <!-- .element: class="fragment" data-fragment-index="1"-->
+                        * Acts as a container for related projects <!-- .element: class="fragment" data-fragment-index="2"-->
+                        * Each team is represented by a generic product <!-- .element: class="fragment" data-fragment-index="3"-->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Parent-Child model
+                        * Parent products can be sub-divided into smaller child products and so on <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * We have one parent product per team <!-- .element: class="fragment" data-fragment-index="2"-->
+                        * ALL - top-level parent (All FactSet products) <!-- .element: class="fragment" data-fragment-index="3"-->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Inheritance
+                        Child products inherit all properties from their parents
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        As an engineer, you will belong to a specific team handling specific products.
+                    </script>
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Environments
+                        Allows for dynamically changing properties and behaviors
+
+                        ![alt text](res/july2017_training_cmt/envs.png "Environments") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## <span style="color: #90EE90">DEVELOPMENT</span>
+                        * For creation and modification
+                        * Cluster: Fonix Inhouse A
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## <span style="color: #FFFF66">STAGING</span>
+                        * For testing and pre-live monitoring
+                        * Cluster: Fonix Inhouse A
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## <span style="color: #F08080">PRODUCTION</span>
+                        * For live and client-facing
+                        * Cluster: Fonix Production A/B, Fonix Inhouse A
+                    </script>
+                </section>
+            </section>
+
+            <section data-background="black">
+                <section data-markdown>
+                    # Pop Quiz 1.0
+                </section>
+                <section data-markdown>
+                    Can you name three children of the product __*Content Management Tools*__?
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        What is the <span style="color: #FFFF66">Staging</span> environment used for?
+                    </script>
+                </section>
+                <section data-markdown>
+                    What is the default environment when you visit [cmt/](http://cmt.prod.factset.com/website/)?
+                </section>
+            </section>
+
+            <section data-background="#291010">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Content Inventory
+                        Central repository for product-related information
+
+                        ![alt text](res/july2017_training_cmt/content-inventory.png "Content Inventory") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Content Inventory
+                        * Can be accessed via <!-- .element: class="fragment" data-fragment-index="1" --> http://cmt.prod.factset.com/website/#/properties <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * Puts all information in one place <!-- .element: class="fragment" data-fragment-index="2" -->
+                        * Property - unit of information in a product <!-- .element: class="fragment" data-fragment-index="3" -->
+                        * Shares data across cmt applications <!-- .element: class="fragment" data-fragment-index="4" -->
+                        * Utilizes <!-- .element: class="fragment" data-fragment-index="5" --> [Product Tree](#) <!-- .element: class="fragment" data-fragment-index="5" --> and <!-- .element: class="fragment" data-fragment-index="5" --> [Environments](#) <!-- .element: class="fragment" data-fragment-index="5" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    Content Inventory is like a global namespace with static properties.
+                </section>
+                <section data-markdown>
+                    Let's take a [look](http://cmt.prod.factset.com/website/#/properties)!
+                </section>
+            </section>
+
+            <section data-background="#1F2433">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Roles
+                        List of users for a given scope and responsibility
+
+                        ![alt text](res/july2017_training_cmt/roles.png "Roles") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Roles
+                        * Can be accessed via <!-- .element: class="fragment" data-fragment-index="1" --> http://cmt.prod.factset.com/website/#/roles <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * Who's who of products <!-- .element: class="fragment" data-fragment-index="2" -->
+                        * Utilizes fixed set of roles that can be overridden <!-- .element: class="fragment" data-fragment-index="3" -->
+                        * Can attach <!-- .element: class="fragment" data-fragment-index="4" --> [rotas](#) <!-- .element: class="fragment" data-fragment-index="4" --> and <!-- .element: class="fragment" data-fragment-index="4" --> [shifts](#) <!-- .element: class="fragment" data-fragment-index="4" --> to identify on-duty role member <!-- .element: class="fragment" data-fragment-index="4" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    Roles define the weekly rotation for on-call engineers.
+                </section>
+                <section data-markdown>
+                    Let's take a [look](http://cmt.prod.factset.com/website/#/roles)!
+                </section>
+            </section>
+
+            <section data-background="#003300">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Alert Model
+                        Defines notification and escalation model using Roles
+
+                        ![alt text](res/july2017_training_cmt/alert-model.png "Alert Model") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Alert Model
+                        * Can be accessed via <!-- .element: class="fragment" data-fragment-index="1" --> http://cmt.prod.factset.com/website/#/alertmodels <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * Who? When? <!-- .element: class="fragment" data-fragment-index="2" -->
+                        * Determines escalation process (intervals between notifications) <!-- .element: class="fragment" data-fragment-index="3" -->
+                        * Utilizes <!-- .element: class="fragment" data-fragment-index="4" --> [Product Tree](#) <!-- .element: class="fragment" data-fragment-index="4" --> and <!-- .element: class="fragment" data-fragment-index="4" --> [Environments](#) <!-- .element: class="fragment" data-fragment-index="4" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        Alert Model answers the questions:
+                        1. Who needs to be notified? <!-- .element: class="fragment" data-fragment-index="1" -->
+                        2. When should they be notified? <!-- .element: class="fragment" data-fragment-index="2" -->
+                        3. How many times should I notify? <!-- .element: class="fragment" data-fragment-index="3" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    Let's take a [look](http://cmt.prod.factset.com/website/#/alertmodels)!
+                </section>
+            </section>
+
+            <section data-background="black">
+                <section data-markdown>
+                    # Pop Quiz 2.0
+                </section>
+                <section data-markdown>
+                    Can you name some [CI properties](#)?
+                </section>
+                <section data-markdown>
+                    Enumerate two roles.
+                </section>
+                <section data-markdown>
+                    What do we use to determine who needs to be notified?
+                </section>
+            </section>
+
+            <section >
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Event Manager
+                        Deals with any kind of failure of batch processes
+
+                        ![alt text](res/july2017_training_cmt/evm.png "Event Manager") <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Event Manager
+                        * Can be accessed via <!-- .element: class="fragment" data-fragment-index="1" --> http://cmt.prod.factset.com/website/#/events <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * Who? How? <!-- .element: class="fragment" data-fragment-index="2" -->
+                        * Files an event RPD to track the issue <!-- .element: class="fragment" data-fragment-index="3" -->
+                        * Utilizes <!-- .element: class="fragment" data-fragment-index="4" --> [Roles](#) <!-- .element: class="fragment" data-fragment-index="4" --> and <!-- .element: class="fragment" data-fragment-index="4" --> [Alert Models](#) <!-- .element: class="fragment" data-fragment-index="4" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    An event can be raised automatically by a trigger or manually by an engineer.
+                </section>
+                <section data-markdown>
+                    There are several event types.
+                </section>
+                <section data-markdown>
+                    ## Workflow event  
+                    Raised by Workflow Manager during a failed execution of an activity
+                </section>
+                <section data-markdown>
+                    ## Quetex event  
+                    Raised by stalled quetexes waiting for a resource to finish
+                </section>
+                <section data-markdown>
+                    ## DBL event  
+                    Raised by DBL keys signifying delayed updates
+                </section>
+                <section data-markdown>
+                    ## JAMS event  
+                    Raised by failed JAMS jobs
+                </section>
+                <section data-markdown>
+                    ## Generic event  
+                    Raised by Disk Alert, Generic Tool Failure, etc
+                </section>
+                <section data-markdown>
+                    ## Manual event
+                    Raised manually by a stakeholder
+                </section>
+                <section data-markdown>
+                    Let's take a [look](http://cmt.prod.factset.com/website/#/events)!
+                </section>
+            </section>
+
+            <section data-background="#002B36">
+                <section data-markdown>
+                    ## Event Actions
+                    
+                    ACTION | INTENT
+                    --- | ---
+                    `Page` | Notify a product stakeholder
+                    `Escalate` | Notify next level in the alert model
+                    `Raise` | Fire an event
+                    `Ack` | Act of investigating an event
+                    `Resolve` | Successful completion of an event
+                </section>
+            </section>
+
+            <section data-background="#291010">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## What to do when paged?
+
+                        ![alt text](res/july2017_training_cmt/when-paged.jpg "Whuuut")
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        1. Ack the notification by clicking the link in the event <!-- .element: class="fragment" data-fragment-index="1"-->
+                        2. Investigate the issue <!-- .element: class="fragment" data-fragment-index="2"-->
+                        3. If issue is manageable, fix the problem <!-- .element: class="fragment" data-fragment-index="3"-->
+                        4. Otherwise, escalate to the next level or ask for help <!-- .element: class="fragment" data-fragment-index="4"-->
+                        5. Summarize the following details: <!-- .element: class="fragment" data-fragment-index="5"-->
+                           * Cause of the issue <!-- .element: class="fragment" data-fragment-index="6"-->
+                           * Steps needed to fix the problem <!-- .element: class="fragment" data-fragment-index="7"-->
+                           * ETA <!-- .element: class="fragment" data-fragment-index="8"-->
+                    </script>
+                </section>
+                <section data-markdown>
+                    Bro tip #173: For lengthly investigation and fixes, don't forget to provide regular updates.
+                </section>
+                <section data-markdown>
+                    ![alt text](res/july2017_training_cmt/when-paged-5.jpg "Princess Sarah is real")
+                </section>
+            </section>
+
+            <section data-background="black">
+                <section data-markdown>
+                    # Pop Quiz 3.0
+                </section>
+                <section data-markdown>
+                    Name three types of event.
+                </section>
+                <section data-markdown>
+                    When I ___, I take responsibility of the breakage and will attempt to look into it.
+                </section>
+                <section data-markdown>
+                    Term used for completed event or when an issue is no longer relevant.
+                </section>
+                <section data-markdown>
+                    What to do when paged?
+                </section>
+                <section data-markdown>
+                    ![alt text](res/july2017_training_cmt/when-paged-4.jpg "Bimby approves")
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    ## Event Life Cycle
+                    
+                    ![alt text](res/july2017_training_cmt/event-life-cycle.png "Life cycle of an event") <!-- .element: class="fragment" -->
+                </section>
+            </section>
+
+            <section data-markdown data-background="white">
+                # questions?
+            </section>
+
+            <section data-markdown data-background="black">
+                # thank you!
+            </section>
+
+        </div>
+    </div>
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+
+    <script>
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+            // https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [
+                { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]'); } },
+                { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+                { src: 'reveal.js/plugin/notes/notes.js', async: true }
+            ]
+        });
+    </script>
+</body>
+</html>

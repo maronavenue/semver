@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Git in BDI</title>
+
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>git in bdi</h1>
+                <h3>basics, branching &amp; best practices</h3>
+                <small><a href="mailto:mmontano@factset.com">mmontano@factset.com</a></small>
+            </section>
+
+            <section data-background="black">
+                <section>
+                    This caters to BDI engineers who are about to start a new project in Git &mdash; or is in the middle of one.
+                </section>
+                <section>
+                    A mixture of most useful Git operations you're guaranteed to use and introduction to our formal Git workflow.
+                </section>
+                <section>
+                    By the end of this session, you'll be able to track your revisions correctly and cleanly from start to finish &mdash; til production release.
+                </section>
+            </section>
+            
+            <section data-markdown>
+                ## Agenda
+                * Perforce vs Git
+                * First things first
+                * Git starter pack
+                * Branching
+                * Merging
+                * Dealing with remotes
+                * BDI workflow
+                * That thing called rebase
+            </section>
+
+            <section data-background="#002B36">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Perforce vs Git
+                        We are taking big leap from CVCS to DVCS. What are their key differences?<!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    ### VCS warz
+                    ![alt text](res/bdi-git-workflow/p4-vs-git.jpg "Perforce vs Git")
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        CVCS | DVCS
+                        --- | ---
+                        commits **per file**<!-- .element: class="fragment highlight-blue" data-fragment-index="1"--> | commits **per snapshot**<!-- .element: class="fragment highlight-blue" data-fragment-index="1"-->
+                        no history | contains entire history
+                        requires network connectivity | performs most actions locally
+                        branches set of files | branches entire state
+                        _"2-way merging"_ (`diff`) | 3-way merging, etc
+                        `depot` | `repo`
+                    </script>
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    ## First things first
+                    _Setup your Git profile and authentication_
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                    ### Git config
+                    `$ git config --global user.name "Maron Montano"` <!-- .element: class="fragment" -->
+
+                    `$ git config --global user.email "mmontano@factset.com"` <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                    ### SSH keys
+                    `$ ssh-keygen -t rsa -b 2048` <!-- .element: class="fragment" data-fragment-index="1" -->
+
+                    Add  ~/.ssh/id_rsa.pub to your <!-- .element: class="fragment" data-fragment-index="2" --> [Git account](https://gitlab.factset.com/profile/keys)
+                    <!-- .element: class="fragment" data-fragment-index="2" -->
+                    </script>
+                </section>
+            </section>
+
+            <section data-background="#320927">
+                <section data-markdown>
+                    ## Git starter pack
+                    _Commands you need to get you going_
+                </section>
+                <section data-markdown>
+                    Use | To
+                    --- | ---
+                    `git clone` | initialize or copy a repo
+                    `git add` | stage files
+                    `git commit` | record changes to repo
+                    `git status` | show working tree
+                    `git log` | show commit logs
+                </section>
+                <section data-markdown>
+                    ### Just keep this in mind and you're good to go:
+                    ![alt text](res/bdi-git-workflow/git-sections.png "3 Sections in Git")
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    ## Branching
+                    > "Some people refer to Git's branching model as its "killer feature," and it certainly sets Git apart in the VCS community. Why is it so special?"  
+                    > -- [Pro Git book, 2nd edition](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### Git branch
+                        * A lightweight movable pointer to recorded commits. <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * It moves forward everytime you commit. <!-- .element: class="fragment" data-fragment-index="2" -->
+                        * Default branch: <!-- .element: class="fragment" data-fragment-index="3" --> `master` <!-- .element: class="fragment" data-fragment-index="3" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    ![alt text](res/bdi-git-workflow/git-branch.png "Branching in Git")
+                </section>
+                <section data-markdown>
+                    ### Branching commands:
+                    Use | To
+                    --- | ---
+                    `git branch` | create, delete (and etc) a branch
+                    `git checkout` | select a branch
+                    `git log` | show branches along commit log
+                </section>
+            </section>
+
+            <section data-background="#291010">
+                <section data-markdown>
+                    ## Git merging
+                    _How did Git mitigate traditional merging issues?_
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ![alt text](res/bdi-git-workflow/1-merging.gif "2-way merge example")
+
+                        * How can we tell whether you modified line 30 or I? <!-- .element: class="fragment" -->
+                        * What if we both modified the line? <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <img src="res/bdi-git-workflow/2-merging.gif" width="450" height="400" title="3-way merge example" />
+
+                        * Turns a manual conflict into automatic resolution <!-- .element: class="fragment" -->
+                        * Finds the original version &mdash; aka "nearest common ancestor" <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### A more practical example...
+                        <img src="res/bdi-git-workflow/3-merging.gif" width="550" height="400" title="3-way merge exhibit 1" />
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        <img src="res/bdi-git-workflow/4-merging.gif" width="570" height="485" title="3-way merge exhibit 2" />
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### Merging in Git
+
+                        * <!-- .element: class="fragment" data-fragment-index="1" --> `$ git merge <target branch>` <!-- .element: class="fragment" data-fragment-index="1" -->
+                        * Target branch is where you merge with <!-- .element: class="fragment" data-fragment-index="2" -->
+                        * Current branch is where you merge into <!-- .element: class="fragment" data-fragment-index="3" -->
+                        * <!-- .element: class="fragment" data-fragment-index="4" --> Use <a href="#/5/1">Git starter pack</a> <!-- .element: class="fragment" data-fragment-index="4" --> for any merge conflicts
+                        ![alt text](res/bdi-git-workflow/merge-commit.png "A merge commit")
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### Git has 2 merge strategies:
+                          1. Fast-forward merging <!-- .element: class="fragment" -->
+                          2. Recursive merging <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    ### Fast-forward merge (before)
+                    ![alt text](res/bdi-git-workflow/1-ff-merge.png "FF Merge - before")
+                </section>
+                <section data-markdown>
+                    ### Fast-forward merge (after)
+                    ![alt text](res/bdi-git-workflow/2-ff-merge.png "FF Merge - after")
+                </section>
+                <section data-markdown>
+                    ### Recursive merge (before)
+                    ![alt text](res/bdi-git-workflow/1-recursive-merge.png "Recursive Merge - before")
+                </section>
+                <section data-markdown>
+                    ### Recursive merge (after)
+                    ![alt text](res/bdi-git-workflow/3-recursive-merge.png "Recursive Merge - after")
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    ## Dealing with remotes
+                    _Remote repos are just server-side repos_
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Recapping git clone
+                        1. <!-- .element: class="fragment" data-fragment-index="1"--> Names the remote repo as `origin` <!-- .element: class="fragment highlight-blue" data-fragment-index="1"--> for you
+                        2. <!-- .element: class="fragment" data-fragment-index="2"--> Pulls down all its data
+                        3. <!-- .element: class="fragment" data-fragment-index="3"--> Creates a pointer to where its master branch is: `origin/master` <!-- .element: class="fragment highlight-blue" data-fragment-index="3"-->
+                        4. <!-- .element: class="fragment" data-fragment-index="4"--> Gives you a local master branch starting at that pointer
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### Remote handle
+                        A reference to a remote repo including branches, tags, and so on <!-- .element: class="fragment" data-fragment-index="1"-->  
+
+                        Default remote name: <!-- .element: class="fragment" data-fragment-index="2"--> `origin` <!-- .element: class="fragment" data-fragment-index="2"-->
+                        ![alt text](res/bdi-git-workflow/remote-handles.png "Remote handles") <!-- .element: class="fragment" data-fragment-index="3"-->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### Remote-tracking branch
+                        An immutable local reference to a remote branch <!-- .element: class="fragment" data-fragment-index="1"-->  
+                        ![alt text](res/bdi-git-workflow/remote-branches.png "Remote branches") <!-- .element: class="fragment" data-fragment-index="2"-->
+
+                        Format: <!-- .element: class="fragment" data-fragment-index="3"--> `<remote-handle>/<branch-name>` <!-- .element: class="fragment" data-fragment-index="3"-->
+                    </script>
+                </section>
+            </section>
+
+            <section data-background="#1F2433">
+                <section data-markdown>
+                    ## BDI workflow
+                    _How BDI is managing Git projects in compliance with FDS Git standards_
+                </section>
+                <section data-markdown>
+                    ![alt text](res/bdi-git-workflow/bdi-git-workflow.png "BDI Git Workflow")
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### Standard FDS branches
+                        Branch | Fonix
+                        :--- | :---
+                        `devel` | `/home/fonix/prd_progs_dev/`
+                        `staging` | `/home/fonix/prd_progs_stage/`
+                        `production` | `/home/fonix/prd_progs/`
+
+                        File a new request <!-- .element: class="fragment" data-fragment-index="1" --> [here](http://prdprogs.factset.com/)
+                        <!-- .element: class="fragment" data-fragment-index="1" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    ### Remote repo should look...
+                    ![alt text](res/bdi-git-workflow/fds-branches.png "FDS branches")
+                </section>
+            </section>
+
+            <section>
+                <section data-markdown>
+                    ## That thing called rebase
+                    > "With great power comes great responsibility."  
+                    > &mdash; Uncle Ben, Spiderman
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### git rebase
+                        Basically has two uses: <!-- .element: class="fragment" -->
+                        1. Update stale branches <!-- .element: class="fragment" -->
+                        2. Squash interim commits interactively <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    ![alt text](res/bdi-git-workflow/interim-commits.png "Interim commits")
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### when branch goes stale...
+                        ![alt text](res/bdi-git-workflow/1-rebase.png "Stale branch")
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### when branch goes stale...
+                        We can simply merge with Master into Feature branch: <!-- .element: class="fragment" -->
+                        <img src="res/bdi-git-workflow/2-rebase.png" width="500" height="300" title="Merge commit approach" class="fragment" />
+
+                        However, this produces superfluous merge commits over time! <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ### when branch goes stale...
+                        This is where git rebase kicks in... <!-- .element: class="fragment" -->
+                        <img src="res/bdi-git-workflow/3-rebase.png" width="500" height="300" title="Rebase approach" class="fragment" />
+
+                        _"We look for the base of the two branches and replay our commits on top of master."_ <!-- .element: class="fragment" -->
+                    </script>
+                </section>
+                <section data-markdown>
+                    ### golden rule of rebasing
+                    _Never use it on **public** branches!_
+                </section>
+            </section>
+
+            <section data-markdown data-background="white">
+                # questions?
+            </section>
+
+            <section data-markdown data-background="black">
+                # thank you!
+            </section>
+        </div>
+    </div>
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+
+    <script>
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+            // https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [
+                { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]'); } },
+                { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+                { src: 'reveal.js/plugin/notes/notes.js', async: true }
+            ]
+        });
+    </script>
+</body>
+</html>
